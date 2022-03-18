@@ -86,3 +86,37 @@ def update_profile(request):
 
         user = User.objects.get(id=current_user.id)
 
+
+            # check if user exists in profile table and if not create a new profile
+        if Profile.objects.filter(user_id=current_user.id).exists():
+
+            profile = Profile.objects.get(user_id=current_user.id)
+            profile.profile_pic = profile_url
+            profile.neighbourhood = neighbourhood
+            profile.location = location
+            profile.save()
+        else:
+            profile = Profile(
+                user_id=current_user.id,
+                name=name,
+                profile_pic=profile_url,
+                neighbourhood=neighbourhood,
+                location=location,
+            )
+
+            profile.save_profile()
+
+        user.first_name = first_name
+        user.last_name = last_name
+        user.username = username
+        user.email = email
+
+        user.save()
+
+        return redirect("/profile", {"success": "Profile Updated Successfully"})
+
+        # return render(request, 'profile.html', {'success': 'Profile Updated Successfully'})
+    else:
+        return render(request, "profile.html", {"danger": "Profile Update Failed"})
+
+
