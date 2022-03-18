@@ -120,3 +120,82 @@ def update_profile(request):
         return render(request, "profile.html", {"danger": "Profile Update Failed"})
 
 
+
+# create post
+@login_required(login_url="/accounts/login/")
+def create_post(request):
+    if request.method == "POST":
+        current_user = request.user
+        title = request.POST["title"]
+        content = request.POST["content"]
+        category = request.POST["category"]
+        location = request.POST["location"]
+        # neighbourhood = request.POST["neighbourhood"]
+
+        # get current user neighbourhood
+        profile = Profile.objects.filter(user_id=current_user.id).first()
+        # check if user has neighbourhood
+        if profile is None:
+            profile = Profile.objects.filter(
+                user_id=current_user.id).first()  # get profile
+            posts = Post.objects.filter(user_id=current_user.id)
+            # get all locations
+            locations = Location.objects.all()
+            neighbourhood = NeighbourHood.objects.all()
+            category = Category.objects.all()
+            businesses = Business.objects.filter(user_id=current_user.id)
+            contacts = Contact.objects.filter(user_id=current_user.id)
+            # redirect to profile with error message
+            return render(request, "profile.html", {"danger": "Update Profile by selecting Your Neighbourhood name to continue 😥!!", "locations": locations, "neighbourhood": neighbourhood, "categories": category, "businesses": businesses, "contacts": contacts, "posts": posts})
+        else:
+            neighbourhood = profile.neighbourhood
+
+        # check if its an instance of category
+        if category == "":
+            category = None
+        else:
+            category = Category.objects.get(name=category)
+
+         # check if its an instance of location
+        if location == "":
+            location = None
+        else:
+            location = Location.objects.get(name=location)
+
+        # check if there is a post with image
+        if request.FILES:
+            image = request.FILES["image"]
+            # upload image to cloudinary and crop it to square
+            image = cloudinary.uploader.upload(
+                image, crop="limit", width=800, height=600)
+            # image = cloudinary.uploader.upload(image)
+            image_url = image["url"]
+
+            post = Post(
+                user_id=current_user.id,
+                title=title,
+                content=content,
+                image=image_url,
+                category=category,
+                location=location,
+                neighbourhood=neighbourhood,
+            )
+            post.create_post()
+
+            return redirect("/profile", {"success": "Post Created Successfully"})
+        else:
+            post = Post(
+                user_id=current_user.id,
+                title=title,
+                content=content,
+                category=category,
+                location=location,
+                neighbourhood=neighbourhood,
+            )
+            post.create_post()
+
+            return redirect("/profile", {"success": "Post Created Successfully"})
+
+    else:
+        return render(request, "profile.html", {"danger": "Post Creation Failed"})
+
