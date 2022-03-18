@@ -89,3 +89,41 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# business class model
+class Business(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50)
+    description = models.TextField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    neighbourhood = models.ForeignKey(NeighbourHood, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # create business
+    def create_business(self):
+        self.save()
+
+    # delete business
+    def delete_business(self):
+        self.delete()
+
+    # update business
+    def update_business(self):
+        self.update()
+
+    # search business
+    @classmethod
+    def search_by_name(cls, search_term):
+        business = cls.objects.filter(name__icontains=search_term)
+        return business
+
+    # find business by id
+    @classmethod
+    def find_business(cls, id):
+        business = cls.objects.get(id=id)
+        return business
+
+    def __str__(self):
+        return self.name
