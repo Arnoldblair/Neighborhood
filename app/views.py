@@ -50,4 +50,20 @@ def profile(request):
     contacts = Contact.objects.filter(user_id=current_user.id)
     return render(request, 'profile.html', {'profile': profile, 'posts': posts, 'locations': locations, 'neighbourhood': neighbourhood, 'categories': category, 'businesses': businesses, 'contacts': contacts})
 
+# update profile
+@login_required(login_url="/accounts/login/")
+def update_profile(request):
+    if request.method == "POST":
+
+        current_user = request.user
+
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        name = request.POST["first_name"] + " " + request.POST["last_name"]
+
+        neighbourhood = request.POST["neighbourhood"]
+        location = request.POST["location"]
 
