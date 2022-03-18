@@ -67,3 +67,22 @@ def update_profile(request):
         neighbourhood = request.POST["neighbourhood"]
         location = request.POST["location"]
 
+
+          # check if its an instance of location
+        if location == "":
+            location = None
+        else:
+            location = Location.objects.get(name=location)
+
+        # check if its an instance of neighbourhood
+        if neighbourhood == "":
+            neighbourhood = None
+        else:
+            neighbourhood = NeighbourHood.objects.get(name=neighbourhood)
+
+        profile_image = request.FILES["profile_pic"]
+        profile_image = cloudinary.uploader.upload(profile_image)
+        profile_url = profile_image["url"]
+
+        user = User.objects.get(id=current_user.id)
+
