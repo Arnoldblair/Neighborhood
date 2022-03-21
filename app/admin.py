@@ -9,4 +9,4 @@ admin.site.register(NeighbourHood)
 admin.site.register(Business)
 admin.site.register(Post)
 admin.site.register(Contact)
-# Register your models here.
+

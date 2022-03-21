@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+# cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +33,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# setup cloudinary credentials for django-cloudinary
+cloudinary.config(
+  cloud_name = "dnlogkap2",
+  api_key = "445484296461758",
+  api_secret = "y0F_z0Vg55vo4Me7vlRrOf0ZKLY",
+)
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +53,7 @@ INSTALLED_APPS = [
     'app',
     'cloudinary',
     'bootstrap5',
-     'django_registration',
+    'django_registration',
 ]
 
 MIDDLEWARE = [
